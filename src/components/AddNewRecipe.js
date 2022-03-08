@@ -12,10 +12,12 @@ export default class AddNewRecipe extends React.Component {
           {id:"",
           name: "",
           quantity:"",
-          unit:""
+          unit:"",
+          editStatus: false
         },
           ingredientList:[],
-          recipes:[]
+          recipes:[],
+          editIngredient: false
         }
 
         this.handleIngredient = this.handleIngredient.bind(this);
@@ -24,29 +26,30 @@ export default class AddNewRecipe extends React.Component {
         this.addIng = this.addIng.bind(this);
         this.editIngredient=this.editIngredient.bind(this);
         this.deleteIngredient=this.deleteIngredient.bind(this)
+        this.edit=this.edit.bind(this);
     }
     
     handleIngredient(e){
       const newCurrent = Object.assign({}, this.state.currentIngredient);
       newCurrent.name = e.target.value;
       this.setState({currentIngredient: newCurrent})
-      console.log("name registered")
+      
     }
 
     handleQuantity(e){
         const newCurrent = Object.assign({}, this.state.currentIngredient);
       newCurrent.quantity = e.target.value;
       this.setState({currentIngredient: newCurrent})
-      console.log("qty registered")
+      
     }
     
 
     handleUnit(e){
-      console.log("handleUnitCalled")
+      
         const newCurrent = Object.assign({}, this.state.currentIngredient);
       newCurrent.unit = e.target.value;
       this.setState({currentIngredient: newCurrent})
-      console.log("unit registered")
+      
     }
 
     addIng(e){
@@ -57,7 +60,6 @@ export default class AddNewRecipe extends React.Component {
         const ID = uuidv4();
       
         newCurrent.id = ID;
-        console.log(newCurrent.id)
         this.setState({currentIngredient: newCurrent})
         
       
@@ -66,8 +68,22 @@ export default class AddNewRecipe extends React.Component {
         });
       }
         
+    
     editIngredient(id){
-      console.log(id)}
+      
+      const resultArray = this.state.ingredientList.filter((elem)=>elem.id===id)
+      //the chosen ingredient object
+      const result=resultArray[0]
+      const index=this.state.ingredientList.indexOf(result)
+      console.log(index)
+      result.editStatus=true;
+      console.log(result)
+
+      const IngList = [...this.state.ingredientList]
+      IngList[index] = result
+      console.log(this.state.ingredientList)
+      this.setState({ingredientList:IngList})
+    }
 
     deleteIngredient(id){
        const index = this.state.ingredientList.findIndex((x)=>x.id===id)
@@ -78,6 +94,22 @@ export default class AddNewRecipe extends React.Component {
  
     }
         
+    edit(e){
+      console.log("edit run")
+      const resultArray = this.state.ingredientList.filter((elem)=>elem.id===e.target.className)
+      //the chosen ingredient object
+      const result=resultArray[0]
+      const index=this.state.ingredientList.indexOf(result)
+      result[e.target.name] = e.target.value
+      //put new object in the old index
+      const IngList = [...this.state.ingredientList]
+      IngList[index] = result
+      this.setState({ingredientList:IngList})
+    }
+
+    
+
+    addEdit(id){}
     
 
     render(){
@@ -90,7 +122,8 @@ export default class AddNewRecipe extends React.Component {
         <AddedIngredients ingredientList={this.state.ingredientList} 
                           edit={this.editIngredient}
                           delete={this.deleteIngredient}
-                          
+                          clicked={this.edit} 
+                          addIng={this.addEdit}
 
         />
 
