@@ -2,19 +2,22 @@
 import './App.css';
 import AddNewRecipe from './components/AddNewRecipe'
 import BrowseRecipes from './components/BrowseRecipes'
+
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPen, faTrash, faCarrot } from '@fortawesome/free-solid-svg-icons'
+import { faPen, faTrash, faCarrot, faSection, faShoePrints, faPlus} from '@fortawesome/free-solid-svg-icons'
 
 
-library.add(faPen, faTrash, faCarrot)
+library.add(faPen, faTrash, faCarrot, faSection, faShoePrints, faPlus)
 
 
 function App() {
   return (
     <div className="App">
+      
       <AddNewRecipe />
+      
       <BrowseRecipes />
     </div>
   );

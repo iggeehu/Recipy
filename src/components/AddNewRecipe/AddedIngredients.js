@@ -1,16 +1,19 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import EditExistingIng from "./IngredientForm";
+import EditExistingIng from "./EditExistingIng";
 
 export default function AddedIngredients(props){
 
     
-    console.log(props)
+  
     
     if(props.ingredientList!==[])
     {const ingredientHTML= props.ingredientList.map((ing)=>{
-      if (ing.editStatus===false)
+      console.log(ing.name)
+      console.log(ing.editStatus)
+
+      if (ing.editStatus==false)
       {
-      console.log('if false run')
+      
       return (<div className='ingredient' id={ing.name} key={ing.id}>
       
       <li>{ing.name}, {ing.quantity} {ing.unit}</li>
@@ -20,19 +23,22 @@ export default function AddedIngredients(props){
       </div>)
       }
 
-      if(ing.editStatus===true)
+      if(ing.editStatus==true)
       {
-        console.log('if true run')
+      
       return(
-       <EditExistingIng  
+        <EditExistingIng  
+       ingredientList={props.ingredientList}
        clicked={props.clicked} 
        addIng={props.addIng}
        currentName={ing.name} 
        currentQnt={ing.quantity}
        currentUnit={ing.unit}
-       currentID={ing.id}/>
+       currentID={ing.id} />
       )
       }
+
+      
     });
     
 

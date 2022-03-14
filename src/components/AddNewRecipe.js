@@ -1,7 +1,12 @@
 import React from "react";
 import IngredientForm from "./AddNewRecipe/IngredientForm";
 import AddedIngredients from "./AddNewRecipe/AddedIngredients";
+import AddStepsForm from "./AddNewRecipe/AddStepsForm";
+import DisplaySteps from "./AddNewRecipe/DisplaySteps"
 import { v4 as uuidv4 } from 'uuid';
+import SectionForm from "./AddNewRecipe/SectionForm";
+import FlashMessage from 'react-flash-message';
+
 
 export default class AddNewRecipe extends React.Component {
     constructor(props){
@@ -17,7 +22,14 @@ export default class AddNewRecipe extends React.Component {
         },
           ingredientList:[],
           recipes:[],
-          editIngredient: false
+          editIngredient: false,
+          
+          stepCounter: 0,
+          steps:[],
+          sections: [],
+          currentSection: "",
+          turnOnSectionForm: false,
+          turnOnStepForm: false
         }
 
         this.handleIngredient = this.handleIngredient.bind(this);
@@ -27,6 +39,12 @@ export default class AddNewRecipe extends React.Component {
         this.editIngredient=this.editIngredient.bind(this);
         this.deleteIngredient=this.deleteIngredient.bind(this)
         this.edit=this.edit.bind(this);
+        this.addEdit=this.addEdit.bind(this);
+
+        this.addSection=this.addSection.bind(this);
+        this.addStep=this.addStep.bind(this)
+        this.sectionHandler=this.sectionHandler.bind(this)
+        this.submitSection=this.submitSection.bind(this)
     }
     
     handleIngredient(e){
@@ -56,16 +74,22 @@ export default class AddNewRecipe extends React.Component {
         
         //give the ingredient a unique ID
         e.preventDefault();
+        console.log("addIng triggered")
         const newCurrent = Object.assign({}, this.state.currentIngredient);
         const ID = uuidv4();
       
         newCurrent.id = ID;
+        
         this.setState({currentIngredient: newCurrent})
         
+        const copyArray = [...this.state.ingredientList]
+        copyArray.push(newCurrent)
       
-        this.setState((state)=>{
-            ingredientList: state.ingredientList.push(this.state.currentIngredient)
-        });
+        this.setState(
+          {
+            ingredientList: copyArray
+        })
+       
       }
         
     
@@ -75,13 +99,12 @@ export default class AddNewRecipe extends React.Component {
       //the chosen ingredient object
       const result=resultArray[0]
       const index=this.state.ingredientList.indexOf(result)
-      console.log(index)
+      
       result.editStatus=true;
-      console.log(result)
-
+      
       const IngList = [...this.state.ingredientList]
       IngList[index] = result
-      console.log(this.state.ingredientList)
+     
       this.setState({ingredientList:IngList})
     }
 
@@ -95,12 +118,16 @@ export default class AddNewRecipe extends React.Component {
     }
         
     edit(e){
-      console.log("edit run")
+      console.log(e)
       const resultArray = this.state.ingredientList.filter((elem)=>elem.id===e.target.className)
       //the chosen ingredient object
-      const result=resultArray[0]
+      const result=resultArray[0];
+      
       const index=this.state.ingredientList.indexOf(result)
-      result[e.target.name] = e.target.value
+      const type=e.target.name;
+      result[type] = e.target.value;
+      
+      
       //put new object in the old index
       const IngList = [...this.state.ingredientList]
       IngList[index] = result
@@ -109,12 +136,56 @@ export default class AddNewRecipe extends React.Component {
 
     
 
-    addEdit(id){}
+    addEdit(e){
+      e.preventDefault();
+      
+      
+      const resultArray = this.state.ingredientList.filter((elem)=>elem.id===e.target.className)
+      
+      //the chosen ingredient object
+      const result=resultArray[0];
+      
+      const index=this.state.ingredientList.indexOf(result)
+
+      const IngList = [...this.state.ingredientList]
+      result.editStatus = false
+      IngList[index] = result
+      
+      this.setState({ingredientList:IngList}, ()=>{console.log('state changed')})
+    }
+
+    addSection(){
+        this.setState({turnOnSectionForm:true})
+
+        //if one section already exist and it does not contain any steps, show flash message
+    }
+  
+
+    addStep(){
+        this.setState({turnOnStepForm:true})
+    }
+
+    sectionHandler(e){
+        console.log("sectionHandler initiated")
+        
+        let sectionCopy=this.state.currentSection;
+        sectionCopy=e.target.value;
+        this.setState({currentSection:sectionCopy})
+    }
+
+    submitSection(){
+        const sectionsCopy=this.state.sections
+        sectionsCopy.push(this.state.currentSection)
+        this.setState({sections:sectionsCopy})
+        this.setState({turnOnSectionForm: false})
+        console.log(this.state.sections)
+    }
     
 
     render(){
-      console.log("page renders")
-
+  
+      
+      
     return (
       <div className="App">
 
@@ -136,7 +207,32 @@ export default class AddNewRecipe extends React.Component {
                         currentQnt={this.state.currentIngredient.quantity}
                         currentUnit={this.state.currentIngredient.unit} />
 
+        </div>
 
+        <br></br>
+
+
+        <div className='steps'>
+        <DisplaySteps 
+        sections={this.state.sections}
+        steps={this.state.steps}
+        sectionHandler={this.sectionHandler}
+   
+        />
+
+        <SectionForm 
+        sectionHandler={this.sectionHandler}
+        submitSection={this.submitSection}
+        sectionValue={this.state.currentSection}
+        turnOnSectionForm={this.state.turnOnSectionForm}
+        
+        />
+                    
+                
+        <AddStepsForm 
+        addSection={this.addSection}
+        addStep={this.addStep}
+                      />
         </div>
 
         
