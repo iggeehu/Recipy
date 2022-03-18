@@ -1,29 +1,47 @@
-import SectionForm from "./SectionForm"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function(props){
-
-      
+    const copyCurrent = props.currentStep
+    const copySteps=props.steps
     
-return(
-   
-   <div className='AddStepsForm'>
-          
-           <div>
-               
-               <button onClick={props.addSection}>
-                   <FontAwesomeIcon icon="fa-solid fa-section" /><div>Add A Section</div>
-               </button>
-           </div>
-               
-           <div>
-                
-               <button onClick={props.addStep}>
-                   <FontAwesomeIcon onClick={props.addStep} icon="fa-solid fa-shoe-prints" /><div>Add A Step</div>
-               </button>
-           </div>
-           
-   </div>
-)
+    const display= props.stepFormIDs.map((elem)=>{
+        
+      
+        //if this ID has been submitted, display it
+        if(copySteps.filter(e=>e.id==elem).length==1)
+        {   //console.log("this step has been submitted")
+            const objectOfInterest=copySteps.filter(e=>e.id==elem)[0]
+              
+                return(
+                    //submitted value with an edit button and a delete button
+                     
+                     <li key={elem}>{objectOfInterest.value}
+                     <button onClick={props.deleteSubmitted} id={elem}><FontAwesomeIcon  icon="fa-solid fa-trash" /></button>
+                     <button onClick={props.editSubmitted} id={elem}><FontAwesomeIcon icon="fa-solid fa-pen" /></button>
+                    </li>
+                )
+                    
+        }
+        
+        
 
+        if(copyCurrent.filter(e=>e.id==elem).length==1)
+        {   //console.log("this step has not been submitted")
+            return(
+   
+         <li className='AddStepsForm' key={elem}>
+          <textarea onChange={props.stepFormHandler} id={elem} placeholder='Name your step here' />
+              <button onClick={props.deleteForm} id={elem}><FontAwesomeIcon   icon="fa-solid fa-trash" /></button>
+              <button onClick={props.submitStep} id={elem}><FontAwesomeIcon   icon="fa-solid fa-check" /></button>
+         </li>)
+        }
+    }
+    )
+
+
+   return(
+       <div>
+   <button onClick={props.addForm}>Add A Step Field<FontAwesomeIcon icon="fa-solid fa-plus" /></button>
+   <ol>{display}</ol>
+   </div>)
 }

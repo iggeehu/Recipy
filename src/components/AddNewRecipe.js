@@ -2,9 +2,8 @@ import React from "react";
 import IngredientForm from "./AddNewRecipe/IngredientForm";
 import AddedIngredients from "./AddNewRecipe/AddedIngredients";
 import AddStepsForm from "./AddNewRecipe/AddStepsForm";
-import DisplaySteps from "./AddNewRecipe/DisplaySteps"
 import { v4 as uuidv4 } from 'uuid';
-import SectionForm from "./AddNewRecipe/SectionForm";
+
 import FlashMessage from 'react-flash-message';
 
 
@@ -26,10 +25,11 @@ export default class AddNewRecipe extends React.Component {
           
           stepCounter: 0,
           steps:[],
-          sections: [],
-          currentSection: "",
-          turnOnSectionForm: false,
-          turnOnStepForm: false
+          currentStep:[{id: "initial form", value: ""}],
+          stepFormIDs: ["initial form"],
+          TimeSubmitted: "",
+          RecipeID:""
+          
         }
 
         this.handleIngredient = this.handleIngredient.bind(this);
@@ -41,11 +41,14 @@ export default class AddNewRecipe extends React.Component {
         this.edit=this.edit.bind(this);
         this.addEdit=this.addEdit.bind(this);
 
-        this.addSection=this.addSection.bind(this);
-        this.addStep=this.addStep.bind(this)
-        this.sectionHandler=this.sectionHandler.bind(this)
-        this.submitSection=this.submitSection.bind(this)
-    }
+      
+        this.addForm=this.addForm.bind(this)
+        this.deleteForm=this.deleteForm.bind(this)
+        this.submitStep=this.submitStep.bind(this)
+        this.stepFormHandler=this.stepFormHandler.bind(this)
+        this.deleteSubmitted=this.deleteSubmitted.bind(this)
+        this.editSubmitted=this.editSubmitted.bind(this)
+    } 
     
     handleIngredient(e){
       const newCurrent = Object.assign({}, this.state.currentIngredient);
@@ -71,7 +74,7 @@ export default class AddNewRecipe extends React.Component {
     }
 
     addIng(e){
-        
+        console.log(e)
         //give the ingredient a unique ID
         e.preventDefault();
         console.log("addIng triggered")
@@ -139,7 +142,6 @@ export default class AddNewRecipe extends React.Component {
     addEdit(e){
       e.preventDefault();
       
-      
       const resultArray = this.state.ingredientList.filter((elem)=>elem.id===e.target.className)
       
       //the chosen ingredient object
@@ -154,37 +156,127 @@ export default class AddNewRecipe extends React.Component {
       this.setState({ingredientList:IngList}, ()=>{console.log('state changed')})
     }
 
-    addSection(){
-        this.setState({turnOnSectionForm:true})
+   
 
-        //if one section already exist and it does not contain any steps, show flash message
+    addForm(){
+      
+      const ID = uuidv4();
+      let newArray = this.state.stepFormIDs
+      newArray.push(ID)
+      const object = {id:ID, value:""}
+      const copyCurrent = this.state.currentStep
+      copyCurrent.push(object)
+      this.setState({stepFormIDs: newArray, currentStep:copyCurrent}, 
+        ()=>console.log("currentStep is now" + JSON.stringify(this.state.currentStep) + 
+        "and current stepFormIDs is" + JSON.stringify(this.state.stepFormIDs) ))
+      
+      
     }
-  
 
-    addStep(){
-        this.setState({turnOnStepForm:true})
-    }
-
-    sectionHandler(e){
-        console.log("sectionHandler initiated")
+    deleteForm(e){
         
-        let sectionCopy=this.state.currentSection;
-        sectionCopy=e.target.value;
-        this.setState({currentSection:sectionCopy})
+        const ID=e.currentTarget.id
+        console.log(ID)
+        
+        
+        let newArray=this.state.stepFormIDs
+        //console.log("old stepFormIDs is" + newArray)
+        newArray.splice(newArray.indexOf(ID),1)
+        //console.log("new stepFormIDs is" + newArray)
+        const copyCurrent=this.state.currentStep
+        const ObjectOfInterest = copyCurrent.filter(e=>e.id==ID)[0]
+        const index=copyCurrent.indexOf(ObjectOfInterest,1)
+        copyCurrent.splice(index,1)
+
+        this.setState({stepFormIDs:newArray, currentStep:copyCurrent})
+        }
+        
+        
+    
+
+
+    submitStep(e){
+       
+       const idCopy=e.currentTarget.id
+
+       //console.log(idCopy)
+       
+        const copy = this.state.currentStep
+        //console.log("currentStep array is" + JSON.stringify(copy))
+
+        const objectOfInterest = copy.filter(elem=>elem.id==idCopy)[0]
+        //console.log("objectOfInterest is" + JSON.stringify(objectOfInterest) + "And id is" + idCopy)
+       //if ObjectOfInterest has no value, then flash message
+         
+         if(objectOfInterest.value=="")
+         {console.log("nothing to submit")}
+         else
+         { 
+            const stepCopy = this.state.steps
+            stepCopy.push(objectOfInterest)
+            this.setState({steps:stepCopy})
+            console.log("steps set")
+            const index=copy.indexOf(objectOfInterest)
+            copy.splice(index, 1)
+            this.setState({currentStep: copy},()=>console.log("currentStep" + JSON.stringify(this.state.currentStep)))
+         }
     }
 
-    submitSection(){
-        const sectionsCopy=this.state.sections
-        sectionsCopy.push(this.state.currentSection)
-        this.setState({sections:sectionsCopy})
-        this.setState({turnOnSectionForm: false})
-        console.log(this.state.sections)
+    stepFormHandler(e){
+
+      e.preventDefault()
+      //console.log(e)
+      const copy = this.state.currentStep
+      let objectOfInterest = copy.filter(elem=>elem.id==e.target.id)[0]
+      
+      const index=copy.indexOf(objectOfInterest)
+      objectOfInterest.value=e.target.value
+      console.log("handler, objectOfInterest is" + JSON.stringify(objectOfInterest))
+      copy[index]=objectOfInterest
+      this.setState({currentStep:copy})
     }
-    
+
+
+    deleteSubmitted(e){
+        const targetID=e.currentTarget.id
+        console.log(targetID)
+        const copySteps=this.state.steps
+        const ObjectOI = copySteps.filter(e=>e.id==targetID)[0]
+        const index=copySteps.indexOf(ObjectOI)
+        copySteps.splice(index, 1)
+        
+        const copyList = this.state.stepFormIDs
+        const indexOfList = copyList.indexOf(targetID)
+        copyList.splice(indexOfList,1)
+
+        this.setState({steps:copySteps, stepFormIDs:copyList},()=>{
+          if(this.state.steps.length==0)
+          {
+            this.addForm()
+          }
+
+        })   
+    }
+
+    editSubmitted(e){
+      const ID=e.target.id
+      console.log(ID)
+      const copySteps=this.state.steps
+      const objectOfInterest = copySteps.filter(e=>e.id==ID)[0]
+      const index=copySteps.indexOf(objectOfInterest)
+      copySteps.splice(index, 1)
+
+
+    }
+
+     
 
     render(){
   
       
+      //console.log("currentstep is" + JSON.stringify(this.state.currentStep))
+      //console.log("steps is" + JSON.stringify(this.state.steps))
+      //console.log("IDlist is" + JSON.stringify(this.state.stepFormIDs))
       
     return (
       <div className="App">
@@ -211,31 +303,23 @@ export default class AddNewRecipe extends React.Component {
 
         <br></br>
 
-
-        <div className='steps'>
-        <DisplaySteps 
-        sections={this.state.sections}
-        steps={this.state.steps}
-        sectionHandler={this.sectionHandler}
-   
-        />
-
-        <SectionForm 
-        sectionHandler={this.sectionHandler}
-        submitSection={this.submitSection}
-        sectionValue={this.state.currentSection}
-        turnOnSectionForm={this.state.turnOnSectionForm}
+        <h1>Please Add Instructional Steps</h1>
         
-        />
-                    
-                
+              
         <AddStepsForm 
-        addSection={this.addSection}
-        addStep={this.addStep}
-                      />
-        </div>
-
+        steps={this.state.steps}
+        addForm={this.addForm}
+        stepFormIDs={this.state.stepFormIDs}
+        deleteForm={this.deleteForm}
+        stepFormHandler={this.stepFormHandler}
+        submitStep={this.submitStep}
+        currentStep={this.state.currentStep}
+        deleteSubmitted={this.deleteSubmitted}
+        editSubmitted={this.editSubmitted}
         
+                      />
+      
+        <button onClick={this.submitRecipe}>Submit This Recipe</button>
       </div>
     );
     

@@ -10,7 +10,7 @@ export default function AddedIngredients(props){
     {const ingredientHTML= props.ingredientList.map((ing)=>{
       console.log(ing.name)
       console.log(ing.editStatus)
-
+     
       if (ing.editStatus==false)
       {
       
