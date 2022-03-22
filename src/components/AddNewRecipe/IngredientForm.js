@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Warnings from "./Warnings";
 
 export default function(props){
      const unit = [" ", "g", "kg", "cup", "tsp", "tbsp", "oz", "lbs"];
@@ -20,6 +21,7 @@ return(
                  {unitHtml}
                 </select>
             </div> 
+            {props.showIngredientWarning && <Warnings />}
             <button type='submit' onClick={props.addIng}>Add</button>
             </form>
             

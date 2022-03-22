@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
+import Warnings from './Warnings'
 export default function(props){
     const copyCurrent = props.currentStep
     const copySteps=props.steps
@@ -23,14 +23,15 @@ export default function(props){
                     
         }
         
-        
-
+        //if object with this ID has not been submitted
         if(copyCurrent.filter(e=>e.id==elem).length==1)
-        {   //console.log("this step has not been submitted")
+        {   const objectOfInterest=copyCurrent.filter(e=>e.id==elem)[0]
+            console.log(objectOfInterest)
+            //console.log("this step has not been submitted")
             return(
    
          <li className='AddStepsForm' key={elem}>
-          <textarea onChange={props.stepFormHandler} id={elem} placeholder='Name your step here' />
+          <textarea onChange={props.stepFormHandler} id={elem} defaultValue={objectOfInterest.value} placeholder='Name your step here' />
               <button onClick={props.deleteForm} id={elem}><FontAwesomeIcon   icon="fa-solid fa-trash" /></button>
               <button onClick={props.submitStep} id={elem}><FontAwesomeIcon   icon="fa-solid fa-check" /></button>
          </li>)
@@ -42,6 +43,7 @@ export default function(props){
    return(
        <div>
    <button onClick={props.addForm}>Add A Step Field<FontAwesomeIcon icon="fa-solid fa-plus" /></button>
+   <Warnings />
    <ol>{display}</ol>
    </div>)
 }
