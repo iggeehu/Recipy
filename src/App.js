@@ -2,7 +2,7 @@
 import './App.css';
 import AddNewRecipe from './components/AddNewRecipe'
 import BrowseRecipes from './components/BrowseRecipes'
-
+import { currentState } from './components/redux';
 import ReactDOM from 'react-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -12,7 +12,7 @@ import { faPen, faTrash, faCarrot, faSection, faShoePrints, faPlus, faCheck} fro
 library.add(faPen, faTrash, faCarrot, faSection, faShoePrints, faPlus, faCheck)
 
 
-function App() {
+function App(props) {
   
   return (
     <div className="App">

@@ -4,37 +4,37 @@ import AddedIngredients from "./AddNewRecipe/AddedIngredients";
 import AddStepsForm from "./AddNewRecipe/AddStepsForm";
 import { v4 as uuidv4 } from 'uuid';
 import {connect} from "react-redux";
-import {submitRecipe} from "../actions"
+import {submitRecipe} from "../actions";
+import {state, currentState} from './redux';
+import TitleForm from './AddNewRecipe/TitleForm';
 
 import FlashMessage from 'react-flash-message';
 
+const initialState={
+  titleField:"",
+  ingID:[],
+  currentIngredient:
+  {id:"",
+  name: "",
+  quantity:"",
+  unit:"",
+  editStatus: false
+},
+  ingredientList:[],
+  recipes:[],
+  editIngredient: false,
+  showIngredieentWarning: false,
+  steps:[],
+  currentStep:[{id: "initial form", value: ""}],
+  stepFormIDs: ["initial form"],
+  recipe:{title:"", recipeID:"", timeSubmitted:"", ingredientList:[], steps:[]}
+  
+}
 
 export class AddNewRecipe extends React.Component {
     constructor(props){
         super(props);
-        this.state={
-          ingID:[],
-          currentIngredient:
-          {id:"",
-          name: "",
-          quantity:"",
-          unit:"",
-          editStatus: false
-        },
-          ingredientList:[],
-          recipes:[],
-          editIngredient: false,
-          showIngredieentWarning: false,
-          stepCounter: 0,
-          steps:[],
-          currentStep:[{id: "initial form", value: ""}],
-          stepFormIDs: ["initial form"],
-          TimeSubmitted: "",
-          RecipeID:"",
-          Submitted: false,
-          Recipe:{RecipeID:"", TimeSubmitted:"", IngredientList:[], Steps:[]}
-          
-        }
+        this.state={...initialState};
 
         this.handleIngredient = this.handleIngredient.bind(this);
         this.handleQuantity = this.handleQuantity.bind(this);
@@ -45,13 +45,23 @@ export class AddNewRecipe extends React.Component {
         this.edit=this.edit.bind(this);
         this.addEdit=this.addEdit.bind(this);
         this.submitRecipe=this.submitRecipe.bind(this);
-        this.addForm=this.addForm.bind(this)
-        this.deleteForm=this.deleteForm.bind(this)
-        this.submitStep=this.submitStep.bind(this)
-        this.stepFormHandler=this.stepFormHandler.bind(this)
-        this.deleteSubmitted=this.deleteSubmitted.bind(this)
-        this.editSubmitted=this.editSubmitted.bind(this)
+        this.addForm=this.addForm.bind(this);
+        this.deleteForm=this.deleteForm.bind(this);
+        this.submitStep=this.submitStep.bind(this);
+        this.stepFormHandler=this.stepFormHandler.bind(this);
+        this.deleteSubmitted=this.deleteSubmitted.bind(this);
+        this.editSubmitted=this.editSubmitted.bind(this);
+        this.handleTitle=this.handleTitle.bind(this);
+    
     } 
+
+    handleTitle(e){
+      console.log("handleTitle")
+      const currentTitle = e.target.value
+      this.setState({titleField: currentTitle})
+    }
+
+   
     
     handleIngredient(e){
       const newCurrent = Object.assign({}, this.state.currentIngredient);
@@ -74,9 +84,9 @@ export class AddNewRecipe extends React.Component {
 
     addIng(e){
         //give the ingredient a unique ID
-        this.setState({showIngredientWarning:false}, ()=>{console.log("beginning addIng SIW" + this.state.showIngredieentWarning)})
+        this.setState({showIngredientWarning:false})
         e.preventDefault();
-        console.log("addIng triggered")
+        
         const newCurrent = Object.assign({}, this.state.currentIngredient);
         const ID = uuidv4();
         newCurrent.id = ID;
@@ -137,7 +147,7 @@ export class AddNewRecipe extends React.Component {
       const IngList = [...this.state.ingredientList]
       result.editStatus = false
       IngList[index] = result
-      this.setState({ingredientList:IngList}, ()=>{console.log('state changed')})
+      this.setState({ingredientList:IngList})
     }
 
    
@@ -149,9 +159,7 @@ export class AddNewRecipe extends React.Component {
       const object = {id:ID, value:""}
       const copyCurrent = this.state.currentStep
       copyCurrent.push(object)
-      this.setState({stepFormIDs: newArray, currentStep:copyCurrent}, 
-        ()=>console.log("currentStep is now" + JSON.stringify(this.state.currentStep) + 
-        "and current stepFormIDs is" + JSON.stringify(this.state.stepFormIDs) ))   
+      this.setState({stepFormIDs: newArray, currentStep:copyCurrent})   
     }
 
     deleteForm(e){
@@ -185,7 +193,7 @@ export class AddNewRecipe extends React.Component {
             console.log("steps set")
             const index=copy.indexOf(objectOfInterest)
             copy.splice(index, 1)
-            this.setState({currentStep: copy},()=>console.log("currentStep" + JSON.stringify(this.state.currentStep)))
+            this.setState({currentStep: copy})
          }
     }
 
@@ -231,19 +239,43 @@ export class AddNewRecipe extends React.Component {
 
     submitRecipe() {
       const recipeID = uuidv4();
-      const submissionTime=new Date()
-      const RecipeObject = Object.assign({}, this.state.Recipe);
+      const timeSubmitted=new Date()
+      const ingredientList = this.state.ingredientList
+      const steps = this.state.steps
+      const title = this.state.titleField
+      const recipeObject = {...this.state.recipe, title, recipeID, timeSubmitted, ingredientList, steps}
+      //recipeObject.localStates = this.state
+      //console.log(recipeObject)
+      this.props.submitRecipe(recipeObject)
+      
+      console.log("currentState and this.props.recipeStore are")
+      console.log(currentState)
+      console.log(this.props.recipeStore)
+      //console.log("current local state")
+      //console.log(this.state)
+   
+      this.setState({currentIngredient: {}, titleField: "", steps: [], ingredientList: [], stepFormIDs:[]})
+        
+    
+      //Recipe:{RecipeID:"", TimeSubmitted:"", IngredientList:[], Steps:[]}
     }
 
     render(){
-  
-      console.log(this.props)
+      
+      //console.log(this.state.titleField)
       //console.log("currentstep is" + JSON.stringify(this.state.currentStep))
       //console.log("steps is" + JSON.stringify(this.state.steps))
       //console.log("IDlist is" + JSON.stringify(this.state.stepFormIDs))
       
     return (
       <div className="App">
+        
+        <h1>Start A New Recipe</h1>
+        <TitleForm 
+        handleTitle={this.handleTitle}
+        titleField={this.state.titleField}
+        
+        />
 
         <div className='Ingredients'> 
         <AddedIngredients ingredientList={this.state.ingredientList} 
@@ -254,7 +286,7 @@ export class AddNewRecipe extends React.Component {
 
         />
 
-        <h1>Please Add Ingredients Here</h1>
+        <h2>Ingredients</h2>
         <IngredientForm clickUnit={this.handleUnit} 
                         clickIng={this.handleIngredient}
                         clickQnt={this.handleQuantity}
@@ -268,7 +300,7 @@ export class AddNewRecipe extends React.Component {
 
         <br></br>
 
-        <h1>Please Add Instructional Steps</h1>
+        <h2>Steps</h2>
         
               
         <AddStepsForm 
@@ -286,6 +318,7 @@ export class AddNewRecipe extends React.Component {
         
         
         <button onClick={this.submitRecipe}>Submit This Recipe</button>
+
       </div>
     );
     
@@ -295,7 +328,7 @@ export class AddNewRecipe extends React.Component {
   }
 
   const mapStateToProps=(state)=>{
-    return {recipeStore: state}}
+    return {recipeStore: state.myRecipes}}
 
   const mapDispatchToProps=(dispatch)=>{
     return {submitRecipe: (recipe)=>dispatch(submitRecipe(recipe))}

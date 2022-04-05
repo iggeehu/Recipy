@@ -8,8 +8,7 @@ export default function AddedIngredients(props){
     
     if(props.ingredientList!==[])
     {const ingredientHTML= props.ingredientList.map((ing)=>{
-      console.log(ing.name)
-      console.log(ing.editStatus)
+      
      
       if (ing.editStatus==false)
       {

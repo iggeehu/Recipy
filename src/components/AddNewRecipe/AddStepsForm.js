@@ -15,7 +15,7 @@ export default function(props){
                 return(
                     //submitted value with an edit button and a delete button
                      
-                     <li key={elem}>{objectOfInterest.value}
+                     <li key={elem} className='submittedStep'>{objectOfInterest.value}
                      <button onClick={props.deleteSubmitted} id={elem}><FontAwesomeIcon  icon="fa-solid fa-trash" /></button>
                      <button onClick={props.editSubmitted} id={elem}><FontAwesomeIcon icon="fa-solid fa-pen" /></button>
                     </li>
@@ -26,7 +26,7 @@ export default function(props){
         //if object with this ID has not been submitted
         if(copyCurrent.filter(e=>e.id==elem).length==1)
         {   const objectOfInterest=copyCurrent.filter(e=>e.id==elem)[0]
-            console.log(objectOfInterest)
+            //console.log(objectOfInterest)
             //console.log("this step has not been submitted")
             return(
    
