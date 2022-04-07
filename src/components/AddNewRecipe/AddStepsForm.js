@@ -15,9 +15,9 @@ export default function(props){
                 return(
                     //submitted value with an edit button and a delete button
                      
-                     <li key={elem} className='submittedStep'>{objectOfInterest.value}
-                     <button onClick={props.deleteSubmitted} id={elem}><FontAwesomeIcon  icon="fa-solid fa-trash" /></button>
-                     <button onClick={props.editSubmitted} id={elem}><FontAwesomeIcon icon="fa-solid fa-pen" /></button>
+                     <li key={elem} className='submittedStep display'>{objectOfInterest.value}
+                     <button className='button' onClick={props.deleteSubmitted} id={elem}><FontAwesomeIcon className='icon' icon="fa-solid fa-trash" /></button>
+                     <button className='button' onClick={props.editSubmitted} id={elem}><FontAwesomeIcon className='icon' icon="fa-solid fa-pen" /></button>
                     </li>
                 )
                     
@@ -30,10 +30,10 @@ export default function(props){
             //console.log("this step has not been submitted")
             return(
    
-         <li className='AddStepsForm' key={elem}>
+         <li className='AddStepsForm form' key={elem}>
           <textarea onChange={props.stepFormHandler} id={elem} defaultValue={objectOfInterest.value} placeholder='Name your step here' />
-              <button onClick={props.deleteForm} id={elem}><FontAwesomeIcon   icon="fa-solid fa-trash" /></button>
-              <button onClick={props.submitStep} id={elem}><FontAwesomeIcon   icon="fa-solid fa-check" /></button>
+              <button className='button' onClick={props.deleteForm} id={elem}><FontAwesomeIcon className='icon'  icon="fa-solid fa-trash" /></button>
+              <button className='button' onClick={props.submitStep} id={elem}><FontAwesomeIcon className='icon'  icon="fa-solid fa-check" /></button>
          </li>)
         }
     }
@@ -42,8 +42,9 @@ export default function(props){
 
    return(
        <div>
-   <button onClick={props.addForm}>Add A Step Field<FontAwesomeIcon icon="fa-solid fa-plus" /></button>
-   <Warnings />
+   <button className='button' onClick={props.addForm}>Add A Step Field<FontAwesomeIcon className='icon' icon="fa-solid fa-plus" /></button>
+   
    <ol>{display}</ol>
+   {props.showStepWarning && <Warnings />}
    </div>)
 }

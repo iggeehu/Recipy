@@ -1,0 +1,170 @@
+h2{
+    display:inline;
+    font-size: 15px
+}
+
+input { 
+    font-family: 'Rubik Bubbles', cursive; }
+
+
+/* ANRbody is parent of title, steps, ingredient, and submit */ 
+.ANRbody{
+    background-color:cadetblue;
+    width: 90vw;
+    height: 70vh;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2fr 6fr 1fr;
+    font-family: 'Rubik Bubbles', cursive;
+    border-radius: 10%;
+    gap: 2%
+}
+
+
+.steps {
+
+   grid-column: 2/3;
+   grid-row: 2/3
+}
+
+.ingredients {
+   grid-column: 1/2;
+   display: grid;
+   grid-template-rows: 15% 20% 65%;
+   /* background-color:cornflowerblue; */
+   
+}
+
+.title {
+    overflow: auto;
+    grid-column:1/3;
+    grid-row: 1/2;
+}
+
+.submit {
+    grid-column: 1/3;
+    grid-row:3/4
+}
+
+#titleForm {
+    display: inline-block;
+    width: 50%;
+    margin: auto;
+    margin-top: 2%;
+    height: 50%;
+}
+
+#titleFormInput {
+    display: inline-block;
+    border-radius: 10%;
+    outline: none;
+    height: 100%;
+    margin: 10%
+}
+
+#titleFormInput:hover {
+    text-decoration: underline;
+  }
+
+#titleFormInput {
+    background-color:transparent;
+    width: 70%;
+    margin: auto;
+    text-align: center;
+    font-family: 'Rubik Bubbles', cursive;
+    font-size: 20px;
+}
+
+.button {     
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;      
+}
+
+.button:hover {    
+    text-decoration: underline; 
+       
+}
+
+.icon:hover{
+    text-decoration: underline; 
+    background-color:royalblue
+}
+
+input[type="text"]::placeholder {
+    text-align: center
+}
+
+input {
+    border: none
+}
+
+textarea{
+    border: none
+}
+
+/* child of ingredients */ 
+.ingredientTitle {
+  grid-row: 1/2;
+  /* background-color: darkblue; */
+  
+}
+
+/* child of ingredients */ 
+.addedIngredients {
+  /* background-color: crimson; */
+  grid-row: 3/4;
+  
+}
+
+/* child of ingredients */ 
+.ingredientForm{
+    grid-row: 2/3;
+    display:grid;
+    grid-template-columns: 5fr 2fr 2fr 2fr;
+    grid-template-rows: 1fr 1fr;
+    /* background-color:chartreuse; */
+    width: 70%;
+    
+    margin: auto
+}
+
+.ingredientName {
+    
+    grid-column: 1/2;
+    grid-row: 1/2
+    
+}
+ 
+.ingredientQuantity {
+    grid-column: 2/3;
+    grid-row: 1/2
+}
+ 
+.dropdown {
+    grid-column: 3/4;
+    grid-row: 1/2
+}
+
+.submitIng {
+    grid-column: 4/5;
+    grid-row: 1/2
+}
+
+#warning {
+    font-size: 10px;
+    grid-row: 2/3;
+    grid-column: 1/5
+    
+}
+
+.submit {
+    font-family: 'Rubik Bubbles', cursive;
+    border-radius: 10%;
+
+}
+
+.submit:hover{
+    background-color: seagreen;
+}

@@ -7,11 +7,14 @@ import {connect} from "react-redux";
 import {submitRecipe} from "../actions";
 import {state, currentState} from './redux';
 import TitleForm from './AddNewRecipe/TitleForm';
-
+import './AddNewRecipe/AddNewRecipe.css'
+import PrepTime from './AddNewRecipe/PrepTime'
+import Warnings from './AddNewRecipe/Warnings'
 import FlashMessage from 'react-flash-message';
 
 const initialState={
   titleField:"",
+  prepField:{numeral:"", unit:""},
   ingID:[],
   currentIngredient:
   {id:"",
@@ -24,10 +27,12 @@ const initialState={
   recipes:[],
   editIngredient: false,
   showIngredieentWarning: false,
+  showStepWarning: false,
+  showSubmitWarning: false,
   steps:[],
   currentStep:[{id: "initial form", value: ""}],
   stepFormIDs: ["initial form"],
-  recipe:{title:"", recipeID:"", timeSubmitted:"", ingredientList:[], steps:[]}
+  recipe:{title:"", prepTime: {}, recipeID:"", timeSubmitted:"", ingredientList:[], steps:[]}
   
 }
 
@@ -52,16 +57,25 @@ export class AddNewRecipe extends React.Component {
         this.deleteSubmitted=this.deleteSubmitted.bind(this);
         this.editSubmitted=this.editSubmitted.bind(this);
         this.handleTitle=this.handleTitle.bind(this);
-    
+        this.handlePrep=this.handlePrep.bind(this);
+        
     } 
 
     handleTitle(e){
+      e.preventDefault();
       console.log("handleTitle")
       const currentTitle = e.target.value
       this.setState({titleField: currentTitle})
     }
 
-   
+    handlePrep(e){
+      e.preventDefault();
+      console.log("handlePrep")
+      const currentNum = e.target.value
+      const newPrep = Object.assign({}, this.state.prepField)
+      newPrep.numeral = currentNum
+      this.setState({prepField: newPrep})
+    }
     
     handleIngredient(e){
       const newCurrent = Object.assign({}, this.state.currentIngredient);
@@ -77,9 +91,33 @@ export class AddNewRecipe extends React.Component {
     
 
     handleUnit(e){
-      const newCurrent = Object.assign({}, this.state.currentIngredient);
+      console.log(e.target)
+
+      if(e.target.className=='ingUnit')
+      { console.log("ingUnit")
+        const newCurrent = Object.assign({}, this.state.currentIngredient);
       newCurrent.unit = e.target.value;
       this.setState({currentIngredient: newCurrent})
+      }
+      if(e.target.className=="prepUnit")
+      {
+        console.log("prep unit")
+      const newPrep = Object.assign({}, this.state.prepField);
+      newPrep.unit = e.target.value;
+      this.setState({prepField: newPrep})
+      }
+    }
+
+    stepFormHandler(e){
+      e.preventDefault()
+      //console.log(e)
+      const copy = this.state.currentStep
+      let objectOfInterest = copy.filter(elem=>elem.id==e.target.id)[0]
+      const index=copy.indexOf(objectOfInterest)
+      objectOfInterest.value=e.target.value
+      
+      copy[index]=objectOfInterest
+      this.setState({currentStep:copy})
     }
 
     addIng(e){
@@ -94,7 +132,8 @@ export class AddNewRecipe extends React.Component {
         const copyArray = [...this.state.ingredientList]
         if(newCurrent.name=="" || newCurrent.quantity=="" || newCurrent.unit=="")
         { //console.log("warning condition met")
-          this.setState({showIngredientWarning:true})}
+          this.setState({showIngredientWarning:true}, ()=>setTimeout(()=>{this.setState({showIngredientWarning:false})}, 3000))
+        }
         else{
         copyArray.push(newCurrent)
         this.setState({ingredientList: copyArray})
@@ -184,7 +223,8 @@ export class AddNewRecipe extends React.Component {
         //console.log("objectOfInterest is" + JSON.stringify(objectOfInterest) + "And id is" + idCopy)
        //if ObjectOfInterest has no value, then flash message
          if(objectOfInterest.value=="")
-         {console.log("no empty field")}
+         {console.log("no empty field")
+          this.setState({showStepWarning: true}, ()=>setTimeout(()=>{this.setState({showIngredientWarning:false})}, 3000))}
          else
          { 
             const stepCopy = this.state.steps
@@ -197,17 +237,7 @@ export class AddNewRecipe extends React.Component {
          }
     }
 
-    stepFormHandler(e){
-      e.preventDefault()
-      //console.log(e)
-      const copy = this.state.currentStep
-      let objectOfInterest = copy.filter(elem=>elem.id==e.target.id)[0]
-      const index=copy.indexOf(objectOfInterest)
-      objectOfInterest.value=e.target.value
-      
-      copy[index]=objectOfInterest
-      this.setState({currentStep:copy})
-    }
+    
 
 
     deleteSubmitted(e){
@@ -243,11 +273,18 @@ export class AddNewRecipe extends React.Component {
       const ingredientList = this.state.ingredientList
       const steps = this.state.steps
       const title = this.state.titleField
-      const recipeObject = {...this.state.recipe, title, recipeID, timeSubmitted, ingredientList, steps}
-      //recipeObject.localStates = this.state
-      //console.log(recipeObject)
+      const prepTime=this.state.prepField
+
+      if (title == '' || steps ==[] || ingredientList.length==0 || prepTime =={})
+      {
+        console.log('warning triggered')
+        this.setState({showSubmitWarning: true}, ()=>setTimeout(()=>{this.setState({showSubmitWarning: false})}, 3000))
+      }
+      else {
+      const recipeObject = {...this.state.recipe, title, recipeID, timeSubmitted, ingredientList, steps, prepTime}
+
       this.props.submitRecipe(recipeObject)
-      
+      }
       console.log("currentState and this.props.recipeStore are")
       console.log(currentState)
       console.log(this.props.recipeStore)
@@ -268,26 +305,32 @@ export class AddNewRecipe extends React.Component {
       //console.log("IDlist is" + JSON.stringify(this.state.stepFormIDs))
       
     return (
-      <div className="App">
+      <div className="AddNewRecipe">
         
         <h1>Start A New Recipe</h1>
+        <div className='ANRbody'>
+
+        <div className='title'>
         <TitleForm 
         handleTitle={this.handleTitle}
         titleField={this.state.titleField}
+        />
+        <PrepTime 
+        handlePrep={this.handlePrep}
+        prepField={this.state.prepField}
+        clickUnit={this.handleUnit} 
+        />
+          
+          </div>
+
+    
+
+        <div className='ingredients'> 
         
-        />
+        <div className='ingredientTitle'><h2>Ingredients</h2></div>
 
-        <div className='Ingredients'> 
-        <AddedIngredients ingredientList={this.state.ingredientList} 
-                          edit={this.editIngredient}
-                          delete={this.deleteIngredient}
-                          clicked={this.edit} 
-                          addIng={this.addEdit}
-
-        />
-
-        <h2>Ingredients</h2>
-        <IngredientForm clickUnit={this.handleUnit} 
+        <IngredientForm 
+                        clickUnit={this.handleUnit} 
                         clickIng={this.handleIngredient}
                         clickQnt={this.handleQuantity}
                         addIng={this.addIng}
@@ -295,14 +338,23 @@ export class AddNewRecipe extends React.Component {
                         currentQnt={this.state.currentIngredient.quantity}
                         currentUnit={this.state.currentIngredient.unit} 
                         showIngredientWarning={this.state.showIngredientWarning}/>
+              
+        <AddedIngredients
+                        className = 'ingredientDisplay' 
+                        ingredientList={this.state.ingredientList} 
+                        edit={this.editIngredient}
+                        delete={this.deleteIngredient}
+                        clicked={this.edit} 
+                        addIng={this.addEdit}
+
+        />
 
         </div>
 
-        <br></br>
-
-        <h2>Steps</h2>
         
-              
+
+      <div className='steps'>
+        <h2>Steps</h2>
         <AddStepsForm 
         steps={this.state.steps}
         addForm={this.addForm}
@@ -313,12 +365,16 @@ export class AddNewRecipe extends React.Component {
         currentStep={this.state.currentStep}
         deleteSubmitted={this.deleteSubmitted}
         editSubmitted={this.editSubmitted}
-        
+        showStepWarning={this.state.showStepWarning}
                       />
+      </div>
         
-        
-        <button onClick={this.submitRecipe}>Submit This Recipe</button>
+        <div className='submit recipe'>
+        {this.state.showSubmitWarning && <Warnings warnID ='2'/>}
+        <button className='submit button' onClick={this.submitRecipe}>Submit This Recipe</button>
+        </div>
 
+      </div>
       </div>
     );
     

@@ -13,7 +13,7 @@ export default function AddedIngredients(props){
       if (ing.editStatus==false)
       {
       
-      return (<div className='ingredient' id={ing.name} key={ing.id}>
+      return (<div id={ing.name} key={ing.id}>
       
       <li>{ing.name}, {ing.quantity} {ing.unit}</li>
       <div onClick={()=>{props.edit(ing.id)}}><FontAwesomeIcon icon="fa-solid fa-pen" /></div>
@@ -42,7 +42,7 @@ export default function AddedIngredients(props){
     
 
     return (
-            <div>
+            <div className='addedIngredients'>
             <p>ingredients for this recipe:</p>
             <FontAwesomeIcon icon="fa-solid fa-carrot" />
             <ul>

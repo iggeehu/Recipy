@@ -1,4 +1,4 @@
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function(props){
     const unit = [" ", "g", "kg", "cup", "tsp", "tbsp", "oz", "lbs"];
@@ -36,7 +36,7 @@ return(
             </div>
            
 
-           <button type='submit' className = {props.ingredientList[index].id} onClick={props.addIng}>Add</button>
+           <button type='submit' className = {props.ingredientList[index].id} onClick={props.addIng}><FontAwesomeIcon   icon="fa-solid fa-check" /></button>
            </form>
    </div>
 )

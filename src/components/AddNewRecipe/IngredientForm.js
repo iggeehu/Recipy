@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Warnings from "./Warnings";
+import './AddNewRecipe.css'
 
 export default function(props){
      const unit = [" ", "g", "kg", "cup", "tsp", "tbsp", "oz", "lbs"];
@@ -11,19 +12,30 @@ export default function(props){
      
 return(
     
-    <div className='eachIng'>
+    <div className='ingredientForm'>
             
-            <form>
+            <div className='ingredientName'>
             <input  type='text' id='ing1' value={props.currentName} onChange={props.clickIng} placeholder="Ingredient Name" />
+            </div>
+            
+            <div className='ingredientQuantity'>
             <input  type='number' id='qtt1' value={props.currentQnt} onChange={props.clickQnt} placeholder="Ingredient Quantity" />
+            </div> 
+             
              <div className="dropdown">
-                 <select required onChange = {props.clickUnit} value={props.currentUnit} name = "dropdown">
+                 <select required className='ingUnit' onChange = {props.clickUnit} value={props.currentUnit} name = "dropdown">
                  {unitHtml}
                 </select>
             </div> 
-            {props.showIngredientWarning && <Warnings />}
-            <button type='submit' onClick={props.addIng}>Add</button>
-            </form>
+
+
+            <div className='submitIng'>
+            <button className = 'ingbutton button' type='submit' onClick={props.addIng}><FontAwesomeIcon className='icon' icon="fa-solid fa-check" /></button>
+            </div>
+
+            <div className='warning'>
+            {props.showIngredientWarning && <Warnings warnID= "0" />}
+            </div>
             
     </div>
 )

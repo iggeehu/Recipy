@@ -11,6 +11,7 @@ export default function(props){
             {   
                 return (<li key={elem.recipeID} className='recipeDisplayBox'>
                 {elem.title}
+                {elem.timeSubmitted}
                 
                 </li>)
             }
