@@ -8,9 +8,12 @@ export default function(props){
     return(
         <div id = 'prepForm'>
             
-                <input id = 'prepFormInput' type='number' value={props.prepField.numerals} onChange={props.handlePrep} placeholder='prep time' />
+            <input id = 'prepFormInput' type='number' className='prepNumber' 
+            value={props.prepField.numeral} onChange={props.handlePrep} pattern="[0-9]*"
+            placeholder='prep time' />
+
                 <div className="dropdown">
-                 <select required className='prepUnit' onChange = {props.clickUnit} value={props.currentUnit} name = "dropdown">
+                 <select required className='prepUnit' onChange = {props.clickUnit} value={props.prepField.unit} name = "dropdown">
                  {unitHtml}
                 </select>
             </div> 

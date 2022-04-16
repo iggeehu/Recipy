@@ -1,0 +1,12 @@
+.navbar {
+    background-color: snow;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    align-items: center;
+    height: 10vh;
+}
+
+.navItem {
+    font-family: 'Rubik Bubbles', cursive; 
+    grid-column: auto
+}

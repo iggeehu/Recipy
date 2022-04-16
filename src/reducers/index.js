@@ -1,17 +1,24 @@
 
-import {SUBMIT_RECIPE} from "../actions/types"
+import {SUBMIT_RECIPE, CHANGE_AUTH} from "../actions/types"
+import { combineReducers } from "redux"
 
-const initialState={
-    myRecipes: []
-}
+export default combineReducers({recipe: recipeReducer, auth: authReducer})
 
-export default function(state=initialState, action){
+function recipeReducer (state=[], action){
     switch(action.type){
         case SUBMIT_RECIPE:
-            console.log("reducer invoked")
-            const newState={...state}
-            newState.myRecipes.push(action.payload)
-            return newState; 
+            console.log("reducer invoked");
+            return [...state, action.payload];
+            
+        default:
+            return state;
+    }
+}
+
+function authReducer(state=false, action){
+    switch(action.type){
+        case CHANGE_AUTH:
+            return action.payload
         default:
             return state;
     }

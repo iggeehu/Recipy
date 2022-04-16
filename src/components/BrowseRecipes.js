@@ -1,17 +1,21 @@
 import {store, currentState} from "./redux"
+import {connect} from "react-redux";
+import './BrowseRecipes/BrowseRecipes.css'
 
-export default function(props){
+   export function BrowseRecipes (props){
     console.log('browseRecipe running')
-    console.log(currentState.myRecipes)
-    var displayRecipes = []
-    if(currentState.myRecipes.length>0)
+    console.log(props)
+
+    
+    
+    if(props.recipeStore.length>0)
     {
-        displayRecipes = currentState.myRecipes.map(
+        var displayRecipes = props.recipeStore.map(
             elem=> 
             {   
                 return (<li key={elem.recipeID} className='recipeDisplayBox'>
-                {elem.title}
-                {elem.timeSubmitted}
+                {elem.title}, 
+                Prep Time: {elem.prepTime.numeral} {elem.prepTime.unit}
                 
                 </li>)
             }
@@ -21,6 +25,7 @@ export default function(props){
     return(
         <div>
         <h1>Browse Recipes</h1>
+        <h2>Your recipes:</h2>
         <ul>
             {displayRecipes}
         </ul>
@@ -28,3 +33,8 @@ export default function(props){
 
     )
 }
+
+const mapStateToProps=(state)=>{
+    return {recipeStore: state.recipe}}
+
+export default connect(mapStateToProps)(BrowseRecipes)

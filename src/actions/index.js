@@ -1,4 +1,4 @@
-import {SUBMIT_RECIPE} from "./types.js"
+import {SUBMIT_RECIPE, CHANGE_AUTH} from "./types.js"
 
 export function submitRecipe(recipe){
    return {
@@ -6,4 +6,11 @@ export function submitRecipe(recipe){
        payload: recipe
    }
 
+}
+
+export function changeAuth(isLoggedIn){
+    return {
+        type: CHANGE_AUTH,
+        payload: isLoggedIn
+    }
 }

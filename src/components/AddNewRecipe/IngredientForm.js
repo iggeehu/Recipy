@@ -15,11 +15,11 @@ return(
     <div className='ingredientForm'>
             
             <div className='ingredientName'>
-            <input  type='text' id='ing1' value={props.currentName} onChange={props.clickIng} placeholder="Ingredient Name" />
+            <input  type='text' id='ing1' className='ingredientText' value={props.currentName} onChange={props.clickIng} placeholder="Ingredient Name" />
             </div>
             
             <div className='ingredientQuantity'>
-            <input  type='number' id='qtt1' value={props.currentQnt} onChange={props.clickQnt} placeholder="Ingredient Quantity" />
+            <input  type='number' id='qtt1' className='quantityText' value={props.currentQnt} onChange={props.clickQnt} placeholder="Ingredient Quantity" />
             </div> 
              
              <div className="dropdown">

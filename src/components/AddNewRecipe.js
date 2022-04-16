@@ -41,9 +41,7 @@ export class AddNewRecipe extends React.Component {
         super(props);
         this.state={...initialState};
 
-        this.handleIngredient = this.handleIngredient.bind(this);
-        this.handleQuantity = this.handleQuantity.bind(this);
-        this.handleUnit = this.handleUnit.bind(this);
+        
         this.addIng = this.addIng.bind(this);
         this.editIngredient=this.editIngredient.bind(this);
         this.deleteIngredient=this.deleteIngredient.bind(this)
@@ -53,72 +51,67 @@ export class AddNewRecipe extends React.Component {
         this.addForm=this.addForm.bind(this);
         this.deleteForm=this.deleteForm.bind(this);
         this.submitStep=this.submitStep.bind(this);
-        this.stepFormHandler=this.stepFormHandler.bind(this);
         this.deleteSubmitted=this.deleteSubmitted.bind(this);
         this.editSubmitted=this.editSubmitted.bind(this);
-        this.handleTitle=this.handleTitle.bind(this);
-        this.handlePrep=this.handlePrep.bind(this);
+        this.handleInput = this.handleInput.bind(this);
         
     } 
 
-    handleTitle(e){
-      e.preventDefault();
-      console.log("handleTitle")
-      const currentTitle = e.target.value
-      this.setState({titleField: currentTitle})
-    }
+   
 
-    handlePrep(e){
-      e.preventDefault();
-      console.log("handlePrep")
-      const currentNum = e.target.value
-      const newPrep = Object.assign({}, this.state.prepField)
-      newPrep.numeral = currentNum
-      this.setState({prepField: newPrep})
-    }
-    
-    handleIngredient(e){
-      const newCurrent = Object.assign({}, this.state.currentIngredient);
-      newCurrent.name = e.target.value;
-      this.setState({currentIngredient: newCurrent}) 
-    }
+    handleInput(e){
+      //e.preventDefault();
+      const currentValue = e.target.value;
+      const currentAsArray = currentValue.split("")
+      const newCurrentIng= Object.assign({}, this.state.currentIngredient)
+      
+      if(e.target.className == 'titleField')
+      {
+        this.setState({titleField: currentValue})
+      }
 
-    handleQuantity(e){
-      const newCurrent = Object.assign({}, this.state.currentIngredient);
-      newCurrent.quantity = e.target.value;
-      this.setState({currentIngredient: newCurrent})
-    }
-    
+      if(e.target.className =='prepNumber')
+      { 
+        
+          const newPrep = Object.assign({}, this.state.prepField)
+          newPrep.numeral = currentValue
+          this.setState({prepField: newPrep})
+           
+      }
 
-    handleUnit(e){
-      console.log(e.target)
-
+      if(e.target.className == 'ingredientText')
+      {
+        newCurrentIng.name = currentValue;
+        this.setState({currentIngredient: newCurrentIng}) 
+      }
+      if(e.target.className=='quantityText')
+      { 
+        newCurrentIng.quantity = currentValue;
+        this.setState({currentIngredient: newCurrentIng}) 
+      }
+      if(e.target.className=='stepText')
+      {
+        const copy = this.state.currentStep;
+      let objectOfInterest = copy.filter(elem=>elem.id==e.target.id)[0];
+      const index=copy.indexOf(objectOfInterest);
+      objectOfInterest.value = currentValue;
+      copy[index]=objectOfInterest;
+      this.setState({currentStep:copy});
+      }
       if(e.target.className=='ingUnit')
-      { console.log("ingUnit")
-        const newCurrent = Object.assign({}, this.state.currentIngredient);
-      newCurrent.unit = e.target.value;
-      this.setState({currentIngredient: newCurrent})
+      { 
+        newCurrentIng.unit = currentValue;
+        this.setState({currentIngredient: newCurrentIng})
       }
       if(e.target.className=="prepUnit")
       {
         console.log("prep unit")
-      const newPrep = Object.assign({}, this.state.prepField);
-      newPrep.unit = e.target.value;
-      this.setState({prepField: newPrep})
+        const newPrep = Object.assign({}, this.state.prepField);
+        newPrep.unit = e.target.value;
+        this.setState({prepField: newPrep})
       }
     }
 
-    stepFormHandler(e){
-      e.preventDefault()
-      //console.log(e)
-      const copy = this.state.currentStep
-      let objectOfInterest = copy.filter(elem=>elem.id==e.target.id)[0]
-      const index=copy.indexOf(objectOfInterest)
-      objectOfInterest.value=e.target.value
-      
-      copy[index]=objectOfInterest
-      this.setState({currentStep:copy})
-    }
 
     addIng(e){
         //give the ingredient a unique ID
@@ -285,20 +278,28 @@ export class AddNewRecipe extends React.Component {
 
       this.props.submitRecipe(recipeObject)
       }
-      console.log("currentState and this.props.recipeStore are")
-      console.log(currentState)
-      console.log(this.props.recipeStore)
+      //console.log("currentState and this.props.recipeStore are")
+      //console.log(currentState)
+      //console.log(this.props.recipeStore)
       //console.log("current local state")
       //console.log(this.state)
    
-      this.setState({currentIngredient: {}, titleField: "", steps: [], ingredientList: [], stepFormIDs:[]})
+      this.setState({currentIngredient: {id:"",
+      name: "",
+      quantity:"",
+      unit:"",
+      editStatus: false
+    }, prepField:{numeral:"", unit:""},
+      titleField: "", steps: [], ingredientList: [], 
+      stepFormIDs:[]}, ()=>console.log("set state success"))
         
     
       //Recipe:{RecipeID:"", TimeSubmitted:"", IngredientList:[], Steps:[]}
     }
 
     render(){
-      
+      //console.log("current redux state is")
+      //console.log(currentState)
       //console.log(this.state.titleField)
       //console.log("currentstep is" + JSON.stringify(this.state.currentStep))
       //console.log("steps is" + JSON.stringify(this.state.steps))
@@ -312,13 +313,15 @@ export class AddNewRecipe extends React.Component {
 
         <div className='title'>
         <TitleForm 
-        handleTitle={this.handleTitle}
+        handleTitle={this.handleInput}
         titleField={this.state.titleField}
+        checkNumInput = {this.state.checkNumInput}
         />
+
         <PrepTime 
-        handlePrep={this.handlePrep}
+        handlePrep={this.handleInput}
         prepField={this.state.prepField}
-        clickUnit={this.handleUnit} 
+        clickUnit={this.handleInput} 
         />
           
           </div>
@@ -330,9 +333,9 @@ export class AddNewRecipe extends React.Component {
         <div className='ingredientTitle'><h2>Ingredients</h2></div>
 
         <IngredientForm 
-                        clickUnit={this.handleUnit} 
-                        clickIng={this.handleIngredient}
-                        clickQnt={this.handleQuantity}
+                        clickUnit={this.handleInput} 
+                        clickIng={this.handleInput}
+                        clickQnt={this.handleInput}
                         addIng={this.addIng}
                         currentName={this.state.currentIngredient.name} 
                         currentQnt={this.state.currentIngredient.quantity}
@@ -360,7 +363,7 @@ export class AddNewRecipe extends React.Component {
         addForm={this.addForm}
         stepFormIDs={this.state.stepFormIDs}
         deleteForm={this.deleteForm}
-        stepFormHandler={this.stepFormHandler}
+        stepFormHandler={this.handleInput}
         submitStep={this.submitStep}
         currentStep={this.state.currentStep}
         deleteSubmitted={this.deleteSubmitted}
@@ -384,7 +387,7 @@ export class AddNewRecipe extends React.Component {
   }
 
   const mapStateToProps=(state)=>{
-    return {recipeStore: state.myRecipes}}
+    return {recipeStore: state.recipe}}
 
   const mapDispatchToProps=(dispatch)=>{
     return {submitRecipe: (recipe)=>dispatch(submitRecipe(recipe))}

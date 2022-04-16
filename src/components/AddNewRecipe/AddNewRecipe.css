@@ -4,12 +4,12 @@ h2{
 }
 
 input { 
-    font-family: 'Rubik Bubbles', cursive; }
-
+    font-family: 'Rubik Bubbles', cursive; 
+}
 
 /* ANRbody is parent of title, steps, ingredient, and submit */ 
 .ANRbody{
-    background-color:cadetblue;
+    background-color:wheat;
     width: 90vw;
     height: 70vh;
     margin: auto;

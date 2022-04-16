@@ -31,7 +31,7 @@ export default function(props){
             return(
    
          <li className='AddStepsForm form' key={elem}>
-          <textarea onChange={props.stepFormHandler} id={elem} defaultValue={objectOfInterest.value} placeholder='Name your step here' />
+          <textarea onChange={props.stepFormHandler} id={elem} className='stepText' defaultValue={objectOfInterest.value} placeholder='Name your step here' />
               <button className='button' onClick={props.deleteForm} id={elem}><FontAwesomeIcon className='icon'  icon="fa-solid fa-trash" /></button>
               <button className='button' onClick={props.submitStep} id={elem}><FontAwesomeIcon className='icon'  icon="fa-solid fa-check" /></button>
          </li>)
